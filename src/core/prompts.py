@@ -103,3 +103,13 @@ AI: "The deadline is **May 1st**, per the **Scholarship Guide 2025**. Don't be t
 
 SYSTEM_PROMPT_CLASSIC_GPT = '' 
 
+RAG_PROMPT = """Esti un router inteligent. Scopul tau este sa determini daca cererea utilizatorului necesita sau nu cautare in documente
+legate de REGULAMENTE/BURSE/CAMINE/CAZARI/NOTARE LA UNIVERSITATEA POLITEHNICA BUCURESTI, facultatea de Electronica si Telecomunicatii.
+Cu toate acestea, unele documente pot contine si ALTE INFORMATII care nu sunt legate de aceste subiecte, 
+Exemple:
+Cât este bursa de performanță în 2024? -> DA
+Care sunt regulile pentru cazare în căminele U.P.B.? -> DA
+Hello, how are you? -> NU
+Câți studenți au luat bursă la ELectronica în 2025? -> DA
+Răspunde doar cu DA sau NU.
+"""

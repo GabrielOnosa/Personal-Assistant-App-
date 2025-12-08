@@ -1,8 +1,11 @@
+
 import openai
 from openai import OpenAI
-from src.config.config import GEMINI_API_KEY
+from src.config.config import GEMINI_API_KEY, PINECONE_API_KEY
 from qfluentwidgets import *
 import src.core.prompts as prompts
+from pinecone import Pinecone
+from langchain_google_vertexai import VertexAIEmbeddings
 
 client = OpenAI(api_key = GEMINI_API_KEY,
                        base_url="https://generativelanguage.googleapis.com/v1beta/openai/")
@@ -28,7 +31,18 @@ def clear_conversation():
     conversation = [{"role": "system", "content": SYSTEM_PROMPT}]
 
 def get_response(message, options = options):
-    conversation.append({"role": "user", "content": message})
+    #conversation.append({"role": "user", "content": message})
+
+    rag_context = ''
+
+    if len(message) > 5 and check_if_rag_needed(message):
+        rag_context = RAG_retrieval(message)
+
+    if rag_context != '':
+        full_mesage = (f"Use the following context to answer the question accurately:\n{rag_context}\nQuestion: {message}")    
+        conversation.append({"role": "user", "content": full_mesage})
+    else:
+        conversation.append({"role": "user", "content": message})
     try:
         print(f"request has the following temperature: {float(options.temperature.value/1000)}")
         response = client.chat.completions.create(
@@ -64,8 +78,39 @@ def change_personality(value):
     conversation[0]["content"] = SYSTEM_PROMPT
 
 #RAG LOGIC HERE
+def check_if_rag_needed(user_input):
+    router_prompt = prompts.RAG_PROMPT
+    message = [{"role": "system", "content": router_prompt},
+              {"role": "user", "content": user_input}]
+    response = client.chat.completions.create(
+            model = 'gemini-2.5-flash',
+            messages = message,
+            temperature= 0.1,
+            max_completion_tokens= 200)
+    
+    print(f"mesaj = {response.choices[0].message.content}")
+    decision = response.choices[0].message.content.strip().upper()
+    print(decision)
+    
+    return decision == "DA"
 
-
+def RAG_retrieval(user_input):
+    pc = Pinecone(api_key=PINECONE_API_KEY)
+    index = pc.Index('iom-rag-index')
+    print("RAG retrieval initiated.")
+    embedding_model = VertexAIEmbeddings(
+        model_name="text-embedding-004")
+    vector = embedding_model.embed_query(user_input)
+    results = index.query(vector = vector, top_k=3, include_metadata=True)
+    context_text = " "
+    print(results)
+    print(" ")
+    print("")
+    for match in results['matches']:
+        text = match['metadata'].get('text', '')
+        print(text)
+        context_text +=f"---\n{text}\n"
+    return context_text
 
 if __name__ == "__main__":
     print(get_response("Hello, how are you?"))

@@ -5,6 +5,8 @@ from qfluentwidgets import *
 from qfluentwidgets import FluentIcon as FIF
 from src.ui.SettingsPage import SettingsPage
 from src.ui.MainPage import MainPage
+from src.ui.ChatHistory import ChatHistoryPage
+from src.ui.AgentPage import AgentPage
 
 
 
@@ -18,8 +20,10 @@ class Window(FluentWindow):
         # Create sub-interfaces, when actually using, replace Widget with your own sub-interface 
         self.homeInterface = MainPage(self)
         self.settingInterface = SettingsPage(self)
+        #self.ChatHistoryPage = ChatHistoryPage('Chat history', self)
         self.splashScreen = SplashScreen(QIcon('src/ui/assets/Dark_mode_logo.png'), self)
         self.splashScreen.setIconSize(QSize(128, 128))
+        self.AgentPage = AgentPage('Agent Mode', self)
 
         self.initNavigation()
         self.initWindow()
@@ -28,10 +32,11 @@ class Window(FluentWindow):
         qconfig.themeChanged.connect(self.update_window_icon) #asta leaga schimbarea temei de schimbarea iconitei - schimbarea temei e ceva din sistem pyqt shit
 
 
-
     def initNavigation(self):
         self.addSubInterface(self.homeInterface, FIF.CHAT, 'Chat')
-
+        #self.addSubInterface(self.ChatHistoryPage, FIF.HISTORY, 'Chat History')
+        #self.navigationInterface.addSeparator()
+        self.addSubInterface(self.AgentPage, FIF.ROBOT, 'Agent Mode')
         self.navigationInterface.addSeparator()
         self.addSubInterface(self.settingInterface, FIF.SETTING, 'Settings', NavigationItemPosition.BOTTOM)
 

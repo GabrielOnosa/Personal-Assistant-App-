@@ -78,9 +78,7 @@ class MainPage(QFrame):
 
         self.scroll_area = SmoothScrollArea()
         self.scroll_area.setWidgetResizable(True)
-        #self.scroll_area.setFrameShape(QFrame.NoFrame)
         self.scroll_area.setStyleSheet("background: transparent")
-        self.scroll_area.viewport().setStyleSheet("background: transparent")
         self.setObjectName('home-interface')
         
         self.header_layout = QHBoxLayout()

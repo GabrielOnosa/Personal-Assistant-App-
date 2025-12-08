@@ -1,10 +1,11 @@
 
 from PyQt5.QtWidgets import (
-    QFrame, QHBoxLayout, QVBoxLayout
+    QFrame, QHBoxLayout, QVBoxLayout, QFileDialog
 )
 from PyQt5.QtCore import Qt
 from qfluentwidgets import *
 import src.core.LLM_logic as LLM_logic
+from src.workers.IngestionWorker import IngestionWorker
 
 
 class SettingsPage(QFrame):
@@ -47,7 +48,7 @@ class SettingsPage(QFrame):
         self.MainLayout.addSpacing(16)
 
         #RAG add knowledge button
-        self.RAG_header = SubtitleLabel('RAG settings for your assistant', self)
+        self.RAG_header = SubtitleLabel('Retrieval-Augmented Generation (RAG)', self)
         font = self.RAG_header.font()
         font.setPointSize(10)
         self.RAG_header.setFont(font)
@@ -58,6 +59,7 @@ class SettingsPage(QFrame):
             title = 'Add Knowledge',
             content = 'Add files such as PDFs or txt documents to enhance the assistant\'s knowledge.',
         )
+        self.rag_file_card.clicked.connect(self.open_file_dialog)
         self.RAG_header_box.addWidget(self.RAG_header, 0, Qt.AlignLeft | Qt.AlignTop) 
         self.RAG_header_box.setContentsMargins(6, 6, 2, 2)
         self.MainLayout.addLayout(self.RAG_header_box)
@@ -84,3 +86,38 @@ class SettingsPage(QFrame):
            setTheme(Theme.LIGHT)
         elif value == 'Dark':
             setTheme(Theme.DARK)
+
+    def open_file_dialog(self):
+        file_dialog = QFileDialog(self)
+        file_dialog.setFileMode(QFileDialog.ExistingFiles)
+        file_dialog.setNameFilter("Documents (*.pdf *.txt)")
+        if file_dialog.exec_():
+            selected_files = file_dialog.selectedFiles()
+            print(f"Selected files: {selected_files}")
+            for file_path in selected_files:
+                # Call the ingestion function for each selected file
+                worker = IngestionWorker(pdf_path=file_path)
+                worker.start()
+                worker.finished_signal.connect(self.on_ingestion_finished)
+
+    def on_ingestion_finished(self, reply):
+        if reply == "An error occurred during ingestion.":
+            InfoBar.error(
+                title='Ingestion Failed',
+                content="An error occurred during ingestion. Please try again.",
+                orient=Qt.Horizontal,
+                isClosable=True,
+                position=InfoBarPosition.TOP,
+                duration=2000,
+                parent=self
+            )
+        elif reply == "Ingestion completed successfully.":
+            InfoBar.success(
+                title='Successfully ingested file!',
+                content="The knowledge base has been updated.",
+                orient=Qt.Horizontal,
+                isClosable=True,
+                position=InfoBarPosition.TOP,
+                duration=2000,
+                parent=self
+         )          
