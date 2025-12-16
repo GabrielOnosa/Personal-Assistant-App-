@@ -81,7 +81,6 @@ class MainPage(QFrame):
         self.scroll_area.setStyleSheet("background: transparent")
         self.setObjectName('home-interface')
         
-        self.header_layout = QHBoxLayout()
 
         self.chat_widget = QWidget()
         
@@ -90,7 +89,6 @@ class MainPage(QFrame):
         self.chat_layout.setSpacing(8)
         self.chat_layout.addStretch()
         self.scroll_area.setWidget(self.chat_widget)
-        
         
         
         layout.addWidget(self.scroll_area)
@@ -148,7 +146,7 @@ class MainPage(QFrame):
                 parent=self
             )
             return
-        
+        #sterge prima chestie aia de welcome daca exista
         if getattr(self, "welcome_widget", None):
             self.chat_layout.removeWidget(self.welcome_widget)
             self.welcome_widget.deleteLater()
@@ -233,9 +231,9 @@ class MainPage(QFrame):
                 content="Seems like no speech was detected...",
                 parent=self
             )
+            self.textbox.setPlaceholderText(" How can I help ...?")
             return
         self.textbox.setText(recognized_text if recognized_text != "" else "")
-        self.textbox.setPlaceholderText(" How can I help ...?")
     
     def on_chat_reset(self):
         LLM_logic.clear_conversation()

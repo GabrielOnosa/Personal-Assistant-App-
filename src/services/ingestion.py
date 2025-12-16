@@ -13,7 +13,6 @@ def ingest(pdf_path):
     print(raw_docs)
     print(f"Loaded {len(raw_docs)} pages.")
 
-
     text_splitter = RecursiveCharacterTextSplitter(
         chunk_size=1000,
         chunk_overlap=200,

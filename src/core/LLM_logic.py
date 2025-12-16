@@ -74,7 +74,6 @@ def change_personality(value):
         SYSTEM_PROMPT = prompts.SYSTEM_PROMPT_COMEDIAN
     else:
         SYSTEM_PROMPT = prompts.SYSTEM_PROMPT_CLASSIC_GPT
-    clear_conversation()
     conversation[0]["content"] = SYSTEM_PROMPT
 
 #RAG LOGIC HERE
@@ -86,12 +85,12 @@ def check_if_rag_needed(user_input):
             model = 'gemini-2.5-flash',
             messages = message,
             temperature= 0.1,
-            max_completion_tokens= 200)
+            max_completion_tokens= 500)
     
     print(f"mesaj = {response.choices[0].message.content}")
     decision = response.choices[0].message.content.strip().upper()
     print(decision)
-    
+    # DA sau NU
     return decision == "DA"
 
 def RAG_retrieval(user_input):

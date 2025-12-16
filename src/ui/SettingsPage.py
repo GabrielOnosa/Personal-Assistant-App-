@@ -37,7 +37,7 @@ class SettingsPage(QFrame):
         self.personality_button = ComboBoxSettingCard(configItem = LLM_logic.options.change_personality, icon = FluentIcon.ROBOT, title = 'Personality', content = "Adjust your chatbot's personality. This doesn't affect the quality of the information provided. ", texts = LLM_logic.personalities)
         self.temperature_button = RangeSettingCard(configItem = LLM_logic.options.temperature, icon = FluentIcon.CALORIES, title = 'Temperature', content = "Adjust your chatbot's temperature. This makes the bot more or less creative ")
         self.top_p_button = RangeSettingCard(configItem = LLM_logic.options.top_p, icon = FluentIcon.UP, title = 'Top P', content = "Controls how many word choices are considered. Low is focused; High is diverse.")
-        self.theme_mode_button = ComboBoxSettingCard(configItem = LLM_logic.options.theme_mode, icon = FluentIcon.BRUSH, title = 'Theme', content = "Adjust the application theme", texts = ['Light', 'Dark', 'System'])
+        self.theme_mode_button = ComboBoxSettingCard(configItem = LLM_logic.options.theme_mode, icon = FluentIcon.BRUSH, title = 'Theme', content = "Adjust the application theme", texts = ['Light', 'Dark'])
         self.theme_mode_button.configItem.valueChanged.connect(self.on_theme_changed)
         self.personality_button.configItem.valueChanged.connect(LLM_logic.change_personality)
         
@@ -88,6 +88,7 @@ class SettingsPage(QFrame):
             setTheme(Theme.DARK)
 
     def open_file_dialog(self):
+        #scrisa cu chat --- doar am apasat TAB
         file_dialog = QFileDialog(self)
         file_dialog.setFileMode(QFileDialog.ExistingFiles)
         file_dialog.setNameFilter("Documents (*.pdf *.txt)")

@@ -42,7 +42,7 @@ class ChatResponse(QWidget):
         self.message_layout.addWidget(text_label)
 
     def set_text_color(self, color):
-  
+        #chatGPT
         text_label = self.findChild(QLabel)
         if text_label:
           

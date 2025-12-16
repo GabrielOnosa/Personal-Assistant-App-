@@ -1,20 +1,21 @@
 
 from PyQt5.QtWidgets import (
     QFrame, QHBoxLayout, 
-    QLabel, QWidget
+    QLabel, QWidget, QSizePolicy
 )
 from qfluentwidgets import *
 from PyQt5.QtCore import Qt
 from qframelesswindow.utils import getSystemAccentColor
 
 class MessageBubble(QWidget):
+    #facuta cu chatu
     def __init__(self, text, parent=None):
         super().__init__(parent)
 
         self.message_layout = QHBoxLayout(self)
         self.message_layout.setSpacing(12)
         
-        self.message_layout.setAlignment(Qt.AlignRight)
+        #self.message_layout.setAlignment(Qt.AlignRight)
         
         message_content = QFrame()
         message_content.setStyleSheet("""
@@ -33,17 +34,13 @@ class MessageBubble(QWidget):
        
         text_label.setCursor(Qt.IBeamCursor)
 
-        fm = text_label.fontMetrics()
-        text_width = fm.boundingRect(text).width()
-        
+        text_label.setWordWrap(True)
+        text_label.setMaximumWidth(400)
 
-        if text_width > 400:
-            text_label.setWordWrap(True)
-            text_label.setMaximumWidth(400)
-        else:
-            text_label.setWordWrap(False)
-            text_label.adjustSize()
-            
+        #text_label.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
+        
+        #text_label.adjustSize()
+
         if isDarkTheme():
             text_color = "white"
             background_color = "#4B4A4A"
@@ -70,6 +67,7 @@ class MessageBubble(QWidget):
         self.message_layout.addWidget(message_content)
     
     def set_style(self, bg_color, text_color):
+        # full chatGPT
         """Updates the background AND text color"""
         text_label = self.findChild(QLabel)
         if text_label:

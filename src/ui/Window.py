@@ -13,7 +13,7 @@ from src.ui.AgentPage import AgentPage
 # cod luat mot a mot din documentatie 
 class Window(FluentWindow):
     """ Main Interface """
-    
+
     def __init__(self):
         super().__init__()
 
